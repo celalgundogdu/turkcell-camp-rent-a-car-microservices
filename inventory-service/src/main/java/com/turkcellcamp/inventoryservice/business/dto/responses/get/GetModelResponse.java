@@ -1,0 +1,19 @@
+package com.turkcellcamp.inventoryservice.business.dto.responses.get;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.UUID;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class GetModelResponse {
+
+    private UUID id;
+    private String name;
+    private UUID brandId;
+}
