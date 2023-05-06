@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface ModelRepository extends JpaRepository<Model, UUID> {
 
+    boolean existsByNameIgnoreCase(String name);
 }

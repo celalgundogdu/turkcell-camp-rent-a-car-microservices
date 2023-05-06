@@ -1,5 +1,6 @@
 package com.turkcellcamp.inventoryservice.business.concretes;
 
+import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
 import com.turkcellcamp.inventoryservice.business.abstracts.BrandService;
 import com.turkcellcamp.inventoryservice.business.dto.requests.create.CreateBrandRequest;
 import com.turkcellcamp.inventoryservice.business.dto.requests.update.UpdateBrandRequest;
@@ -7,6 +8,9 @@ import com.turkcellcamp.inventoryservice.business.dto.responses.create.CreateBra
 import com.turkcellcamp.inventoryservice.business.dto.responses.get.GetAllBrandsResponse;
 import com.turkcellcamp.inventoryservice.business.dto.responses.get.GetBrandResponse;
 import com.turkcellcamp.inventoryservice.business.dto.responses.update.UpdateBrandResponse;
+import com.turkcellcamp.inventoryservice.business.rules.BrandBusinessRules;
+import com.turkcellcamp.inventoryservice.entities.Brand;
+import com.turkcellcamp.inventoryservice.repository.BrandRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,28 +21,52 @@ import java.util.UUID;
 @AllArgsConstructor
 public class BrandServiceImpl implements BrandService {
 
+    private final BrandRepository repository;
+    private final BrandBusinessRules rules;
+    private final ModelMapperService mapper;
+
     @Override
     public List<GetAllBrandsResponse> getAll() {
-        return null;
+        List<Brand> brandList = repository.findAll();
+        List<GetAllBrandsResponse> response = brandList
+                .stream()
+                .map(brand -> mapper.forResponse().map(brand, GetAllBrandsResponse.class))
+                .toList();
+
+        return response;
     }
 
     @Override
     public GetBrandResponse getById(UUID id) {
-        return null;
+        rules.checkIfBrandExistsById(id);
+        Brand brand =  repository.findById(id).orElseThrow();
+        GetBrandResponse response = mapper.forResponse().map(brand, GetBrandResponse.class);
+        return response;
     }
 
     @Override
     public CreateBrandResponse add(CreateBrandRequest request) {
-        return null;
+        rules.checkIfBrandExistsByName(request.getName());
+        Brand brand = mapper.forRequest().map(request, Brand.class);
+        brand.setId(null);
+        repository.save(brand);
+        CreateBrandResponse response = mapper.forResponse().map(brand, CreateBrandResponse.class);
+        return response;
     }
 
     @Override
     public UpdateBrandResponse update(UUID id, UpdateBrandRequest request) {
-        return null;
+        rules.checkIfBrandExistsById(id);
+        Brand brand = mapper.forRequest().map(request, Brand.class);
+        brand.setId(id);
+        repository.save(brand);
+        UpdateBrandResponse response = mapper.forResponse().map(brand, UpdateBrandResponse.class);
+        return response;
     }
 
     @Override
     public void delete(UUID id) {
-
+        rules.checkIfBrandExistsById(id);
+        repository.deleteById(id);
     }
 }

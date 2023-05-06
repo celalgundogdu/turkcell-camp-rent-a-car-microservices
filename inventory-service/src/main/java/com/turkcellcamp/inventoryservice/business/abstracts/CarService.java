@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface CarService {
 
-    List<GetAllCarsResponse> getAll(boolean includeMaintenance);
+    List<GetAllCarsResponse> getAll();
 
     GetCarResponse getById(UUID id);
 

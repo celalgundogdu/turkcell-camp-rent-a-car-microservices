@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface CarRepository extends JpaRepository<Car, UUID> {
 
+    boolean existsByPlateIgnoreCase(String plate);
 }
