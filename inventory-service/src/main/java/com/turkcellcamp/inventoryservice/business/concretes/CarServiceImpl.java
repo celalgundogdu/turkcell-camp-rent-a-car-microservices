@@ -1,5 +1,7 @@
 package com.turkcellcamp.inventoryservice.business.concretes;
 
+import com.turkcellcamp.commonpackage.events.inventory.CarCreatedEvent;
+import com.turkcellcamp.commonpackage.events.inventory.CarDeletedEvent;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
 import com.turkcellcamp.inventoryservice.business.abstracts.CarService;
 import com.turkcellcamp.inventoryservice.business.dto.requests.create.CreateCarRequest;
@@ -11,6 +13,7 @@ import com.turkcellcamp.inventoryservice.business.dto.responses.update.UpdateCar
 import com.turkcellcamp.inventoryservice.business.rules.CarBusinessRules;
 import com.turkcellcamp.inventoryservice.entities.Car;
 import com.turkcellcamp.inventoryservice.entities.enums.CarState;
+import com.turkcellcamp.inventoryservice.business.kafka.producer.InventoryProducer;
 import com.turkcellcamp.inventoryservice.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ public class CarServiceImpl implements CarService {
     private final CarRepository repository;
     private final CarBusinessRules rules;
     private final ModelMapperService mapper;
+    private final InventoryProducer inventoryProducer;
 
     @Override
     public List<GetAllCarsResponse> getAll() {
@@ -49,9 +53,10 @@ public class CarServiceImpl implements CarService {
     public CreateCarResponse add(CreateCarRequest request) {
         rules.checkIfCarExistsByPlate(request.getPlate());
         Car car = mapper.forRequest().map(request, Car.class);
-        car.setId(null);
+        car.setId(UUID.randomUUID());
         car.setState(CarState.AVAILABLE);
         Car createdCar = repository.save(car);
+        sendKafkaCarCreatedEvent(createdCar);
         CreateCarResponse response = mapper.forResponse().map(createdCar, CreateCarResponse.class);
         return response;
     }
@@ -70,5 +75,15 @@ public class CarServiceImpl implements CarService {
     public void delete(UUID id) {
         rules.checkIfCarExistsById(id);
         repository.deleteById(id);
+        sendKafkaCarDeletedEvent(id);
+    }
+
+    private void sendKafkaCarCreatedEvent(Car createdCar) {
+        CarCreatedEvent event = mapper.forResponse().map(createdCar, CarCreatedEvent.class);
+        inventoryProducer.sendMessage(event);
+    }
+
+    private void sendKafkaCarDeletedEvent(UUID id) {
+        inventoryProducer.sendMessage(new CarDeletedEvent(id));
     }
 }

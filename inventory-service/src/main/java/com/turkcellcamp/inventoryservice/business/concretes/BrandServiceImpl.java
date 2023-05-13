@@ -1,5 +1,6 @@
 package com.turkcellcamp.inventoryservice.business.concretes;
 
+import com.turkcellcamp.commonpackage.events.inventory.BrandDeletedEvent;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
 import com.turkcellcamp.inventoryservice.business.abstracts.BrandService;
 import com.turkcellcamp.inventoryservice.business.dto.requests.create.CreateBrandRequest;
@@ -8,6 +9,7 @@ import com.turkcellcamp.inventoryservice.business.dto.responses.create.CreateBra
 import com.turkcellcamp.inventoryservice.business.dto.responses.get.GetAllBrandsResponse;
 import com.turkcellcamp.inventoryservice.business.dto.responses.get.GetBrandResponse;
 import com.turkcellcamp.inventoryservice.business.dto.responses.update.UpdateBrandResponse;
+import com.turkcellcamp.inventoryservice.business.kafka.producer.InventoryProducer;
 import com.turkcellcamp.inventoryservice.business.rules.BrandBusinessRules;
 import com.turkcellcamp.inventoryservice.entities.Brand;
 import com.turkcellcamp.inventoryservice.repository.BrandRepository;
@@ -24,6 +26,7 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository repository;
     private final BrandBusinessRules rules;
     private final ModelMapperService mapper;
+    private final InventoryProducer inventoryProducer;
 
     @Override
     public List<GetAllBrandsResponse> getAll() {
@@ -68,5 +71,10 @@ public class BrandServiceImpl implements BrandService {
     public void delete(UUID id) {
         rules.checkIfBrandExistsById(id);
         repository.deleteById(id);
+        sendKafkaBrandDeletedEvent(id);
+    }
+
+    private void sendKafkaBrandDeletedEvent(UUID id) {
+        inventoryProducer.sendMessage(new BrandDeletedEvent(id));
     }
 }

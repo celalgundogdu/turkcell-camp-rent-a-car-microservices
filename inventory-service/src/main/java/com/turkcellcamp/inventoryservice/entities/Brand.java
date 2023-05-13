@@ -23,6 +23,6 @@ public class Brand {
 
     private String name;
 
-    @OneToMany(mappedBy = "brand")
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     private List<Model> models;
 }

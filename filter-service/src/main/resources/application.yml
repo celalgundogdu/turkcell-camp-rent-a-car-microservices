@@ -5,6 +5,17 @@ spring:
     mongodb:
       database: filterdb
       uri: mongodb://localhost:27017
+  kafka:
+    consumer:
+      bootstrap-servers: http://localhost:9092
+      auto-offset-reset: earliest
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
 server:
   port: 0

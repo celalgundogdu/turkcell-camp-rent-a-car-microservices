@@ -50,11 +50,11 @@ public class FilterServiceImpl implements FilterService {
 
     @Override
     public void deleteAllByBrandId(UUID brandId) {
-
+        repository.deleteAllByBrandId(brandId);
     }
 
     @Override
-    public void deleteAllByModelId(UUID modelId) {
-
+    public void deleteByCarId(UUID carId) {
+        repository.deleteByCarId(carId);
     }
 }

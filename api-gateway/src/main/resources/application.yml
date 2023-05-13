@@ -1,13 +1,12 @@
 spring:
   application:
     name:
-      api-gateway
+      API-GATEWAY
   cloud:
     gateway:
       discovery:
         locator:
           enabled: true
-          lower-case-service-id: true
 
 server:
   port: 9010
