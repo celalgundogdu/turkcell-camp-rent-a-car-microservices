@@ -1,5 +1,7 @@
 package com.turkcellcamp.commonpackage.configuration.mappers;
 
+import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
+import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,5 +12,10 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper getModelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public ModelMapperService getModelMapperService(ModelMapper mapper) {
+        return new ModelMapperServiceImpl(mapper);
     }
 }

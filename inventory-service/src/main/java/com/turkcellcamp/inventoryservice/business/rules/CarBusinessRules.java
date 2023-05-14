@@ -1,5 +1,7 @@
 package com.turkcellcamp.inventoryservice.business.rules;
 
+import com.turkcellcamp.commonpackage.utils.exceptions.EntityAlreadyExistsException;
+import com.turkcellcamp.commonpackage.utils.exceptions.EntityNotFoundException;
 import com.turkcellcamp.inventoryservice.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,13 +16,13 @@ public class CarBusinessRules {
 
     public void checkIfCarExistsById(UUID id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Car not found");
+            throw new EntityNotFoundException("Car not found");
         }
     }
 
     public void checkIfCarExistsByPlate(String plate) {
         if (repository.existsByPlateIgnoreCase(plate)) {
-            throw new RuntimeException("Plate already exists");
+            throw new EntityAlreadyExistsException("Plate already exists");
         }
     }
 }

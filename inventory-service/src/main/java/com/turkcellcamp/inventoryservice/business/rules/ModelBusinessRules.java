@@ -1,5 +1,7 @@
 package com.turkcellcamp.inventoryservice.business.rules;
 
+import com.turkcellcamp.commonpackage.utils.exceptions.EntityAlreadyExistsException;
+import com.turkcellcamp.commonpackage.utils.exceptions.EntityNotFoundException;
 import com.turkcellcamp.inventoryservice.repository.ModelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,13 +16,13 @@ public class ModelBusinessRules {
 
     public void checkIfModelExistsById(UUID id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Model not found");
+            throw new EntityNotFoundException("Model not found");
         }
     }
 
     public void checkIfModelExistsByName(String name) {
         if (repository.existsByNameIgnoreCase(name)) {
-            throw new RuntimeException("Model name already exists");
+            throw new EntityAlreadyExistsException("Model name already exists");
         }
     }
 }
