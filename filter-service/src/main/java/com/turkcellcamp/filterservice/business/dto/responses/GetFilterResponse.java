@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class GetFilterResponse {
 
-    private UUID id;
+    private String id;
     private UUID carId;
     private UUID modelId;
     private UUID brandId;

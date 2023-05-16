@@ -78,6 +78,17 @@ public class CarServiceImpl implements CarService {
         sendKafkaCarDeletedEvent(id);
     }
 
+    @Override
+    public void checkCarAvailability(UUID id) {
+        rules.checkIfCarExistsById(id);
+        rules.checkIfCarAvailable(id);
+    }
+
+    @Override
+    public void changeStateByCarId(UUID id, CarState state) {
+        repository.changeStateByCarId(id, state);
+    }
+
     private void sendKafkaCarCreatedEvent(Car createdCar) {
         CarCreatedEvent event = mapper.forResponse().map(createdCar, CarCreatedEvent.class);
         inventoryProducer.sendMessage(event);

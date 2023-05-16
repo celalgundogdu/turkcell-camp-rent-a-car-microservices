@@ -57,4 +57,9 @@ public class FilterServiceImpl implements FilterService {
     public void deleteByCarId(UUID carId) {
         repository.deleteByCarId(carId);
     }
+
+    @Override
+    public Filter getByCarId(UUID carId) {
+        return repository.findByCarId(carId);
+    }
 }

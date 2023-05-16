@@ -6,6 +6,7 @@ import com.turkcellcamp.inventoryservice.business.dto.responses.create.CreateCar
 import com.turkcellcamp.inventoryservice.business.dto.responses.get.GetAllCarsResponse;
 import com.turkcellcamp.inventoryservice.business.dto.responses.get.GetCarResponse;
 import com.turkcellcamp.inventoryservice.business.dto.responses.update.UpdateCarResponse;
+import com.turkcellcamp.inventoryservice.entities.enums.CarState;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,4 +22,8 @@ public interface CarService {
     UpdateCarResponse update(UUID id, UpdateCarRequest request);
 
     void delete(UUID id);
+
+    void checkCarAvailability(UUID id);
+
+    void changeStateByCarId(UUID id, CarState state);
 }

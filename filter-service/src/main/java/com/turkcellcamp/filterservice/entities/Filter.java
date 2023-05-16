@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Filter {
 
     @Id
-    private UUID id;
+    private String id;
 
     private UUID carId;
 

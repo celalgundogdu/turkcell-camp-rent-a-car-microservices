@@ -1,4 +1,4 @@
-package com.turkcellcamp.filterservice.business.dto.responses;
+package com.turkcellcamp.commonpackage.events.rental;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +11,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAllFiltersResponse {
+public class RentalCreatedEvent {
 
-    private String id;
     private UUID carId;
-    private UUID modelId;
-    private UUID brandId;
 }
