@@ -1,6 +1,8 @@
 package com.turkcellcamp.rentalservice.business.concretes;
 
 import com.turkcellcamp.commonpackage.events.rental.RentalCreatedEvent;
+import com.turkcellcamp.commonpackage.events.rental.RentalDeletedEvent;
+import com.turkcellcamp.commonpackage.utils.kafka.producer.KafkaProducer;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
 import com.turkcellcamp.rentalservice.api.clients.CarClient;
 import com.turkcellcamp.rentalservice.business.abstracts.RentalService;
@@ -10,7 +12,6 @@ import com.turkcellcamp.rentalservice.business.dto.responses.CreateRentalRespons
 import com.turkcellcamp.rentalservice.business.dto.responses.GetAllRentalsResponse;
 import com.turkcellcamp.rentalservice.business.dto.responses.GetRentalResponse;
 import com.turkcellcamp.rentalservice.business.dto.responses.UpdateRentalResponse;
-import com.turkcellcamp.rentalservice.business.kafka.producer.RentalProducer;
 import com.turkcellcamp.rentalservice.business.rules.RentalBusinessRules;
 import com.turkcellcamp.rentalservice.entities.Rental;
 import com.turkcellcamp.rentalservice.repository.RentalRepository;
@@ -29,7 +30,7 @@ public class RentalServiceImpl implements RentalService {
     private final ModelMapperService mapper;
     private final RentalBusinessRules rules;
     private final CarClient carClient;
-    private final RentalProducer rentalProducer;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     public List<GetAllRentalsResponse> getAll() {
@@ -76,6 +77,7 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public void delete(UUID id) {
         rules.checkIfRentalExists(id);
+        sendKafkaRentalDeletedEvent(id);
         repository.deleteById(id);
     }
 
@@ -84,6 +86,11 @@ public class RentalServiceImpl implements RentalService {
     }
 
     private void sendKafkaRentalCreatedEvent(UUID carId) {
-        rentalProducer.sendMessage(new RentalCreatedEvent(carId));
+        kafkaProducer.sendMessage(new RentalCreatedEvent(carId), "rental-created");
+    }
+
+    private void sendKafkaRentalDeletedEvent(UUID id) {
+        UUID carId = repository.findById(id).orElseThrow().getCarId();
+        kafkaProducer.sendMessage(new RentalDeletedEvent(carId), "rental-deleted");
     }
 }

@@ -1,9 +1,10 @@
-package com.turkcellcamp.inventoryservice.business.kafka.consumer;
+package com.turkcellcamp.filterservice.business.kafka.consumer;
 
 import com.turkcellcamp.commonpackage.events.rental.RentalCreatedEvent;
 import com.turkcellcamp.commonpackage.events.rental.RentalDeletedEvent;
-import com.turkcellcamp.inventoryservice.business.abstracts.CarService;
-import com.turkcellcamp.inventoryservice.entities.enums.CarState;
+import com.turkcellcamp.filterservice.business.abstracts.FilterService;
+import com.turkcellcamp.filterservice.business.dto.responses.GetFilterResponse;
+import com.turkcellcamp.filterservice.entities.Filter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,23 +15,27 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RentalConsumer {
 
-    private final CarService service;
+    private final FilterService service;
 
     @KafkaListener(
             topics = "rental-created",
-            groupId = "inventory-rental-create"
+            groupId = "filter-rental-create"
     )
     public void consume(RentalCreatedEvent event) {
-        service.changeStateByCarId(event.getCarId(), CarState.RENTED);
+        Filter filter = service.getByCarId(event.getCarId());
+        filter.setState("RENTED");
+        service.add(filter);
         log.info("Rental created event consumed {}", event);
     }
 
     @KafkaListener(
             topics = "rental-deleted",
-            groupId = "inventory-rental-delete"
+            groupId = "filter-rental-service"
     )
     public void consume(RentalDeletedEvent event) {
-        service.changeStateByCarId(event.getCarId(), CarState.AVAILABLE);
+        Filter filter = service.getByCarId(event.getCarId());
+        filter.setState("AVAILABLE");
+        service.add(filter);
         log.info("Rental deleted event consumed {}", event);
     }
 }

@@ -1,5 +1,6 @@
 package com.turkcellcamp.commonpackage.events.inventory;
 
+import com.turkcellcamp.commonpackage.events.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BrandDeletedEvent {
+public class BrandDeletedEvent implements Event {
 
     private UUID brandId;
 }

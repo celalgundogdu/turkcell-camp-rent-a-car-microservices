@@ -1,4 +1,4 @@
-package com.turkcellcamp.commonpackage.events.inventory;
+package com.turkcellcamp.commonpackage.events.rental;
 
 import com.turkcellcamp.commonpackage.events.Event;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CarDeletedEvent implements Event {
+public class RentalDeletedEvent implements Event {
 
     private UUID carId;
 }

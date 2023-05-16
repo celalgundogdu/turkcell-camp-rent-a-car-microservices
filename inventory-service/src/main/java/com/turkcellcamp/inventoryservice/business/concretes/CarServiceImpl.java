@@ -2,6 +2,7 @@ package com.turkcellcamp.inventoryservice.business.concretes;
 
 import com.turkcellcamp.commonpackage.events.inventory.CarCreatedEvent;
 import com.turkcellcamp.commonpackage.events.inventory.CarDeletedEvent;
+import com.turkcellcamp.commonpackage.utils.kafka.producer.KafkaProducer;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
 import com.turkcellcamp.inventoryservice.business.abstracts.CarService;
 import com.turkcellcamp.inventoryservice.business.dto.requests.create.CreateCarRequest;
@@ -13,7 +14,6 @@ import com.turkcellcamp.inventoryservice.business.dto.responses.update.UpdateCar
 import com.turkcellcamp.inventoryservice.business.rules.CarBusinessRules;
 import com.turkcellcamp.inventoryservice.entities.Car;
 import com.turkcellcamp.inventoryservice.entities.enums.CarState;
-import com.turkcellcamp.inventoryservice.business.kafka.producer.InventoryProducer;
 import com.turkcellcamp.inventoryservice.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class CarServiceImpl implements CarService {
     private final CarRepository repository;
     private final CarBusinessRules rules;
     private final ModelMapperService mapper;
-    private final InventoryProducer inventoryProducer;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     public List<GetAllCarsResponse> getAll() {
@@ -91,10 +91,10 @@ public class CarServiceImpl implements CarService {
 
     private void sendKafkaCarCreatedEvent(Car createdCar) {
         CarCreatedEvent event = mapper.forResponse().map(createdCar, CarCreatedEvent.class);
-        inventoryProducer.sendMessage(event);
+        kafkaProducer.sendMessage(event, "car-created");
     }
 
     private void sendKafkaCarDeletedEvent(UUID id) {
-        inventoryProducer.sendMessage(new CarDeletedEvent(id));
+        kafkaProducer.sendMessage(new CarDeletedEvent(id), "car-deleted");
     }
 }

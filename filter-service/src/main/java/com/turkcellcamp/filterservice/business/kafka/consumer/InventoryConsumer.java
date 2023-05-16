@@ -1,4 +1,4 @@
-package com.turkcellcamp.filterservice.business.kafka.producer;
+package com.turkcellcamp.filterservice.business.kafka.consumer;
 
 import com.turkcellcamp.commonpackage.events.inventory.BrandDeletedEvent;
 import com.turkcellcamp.commonpackage.events.inventory.CarCreatedEvent;
