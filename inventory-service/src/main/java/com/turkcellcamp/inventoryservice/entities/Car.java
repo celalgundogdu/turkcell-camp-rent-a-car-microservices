@@ -27,6 +27,7 @@ public class Car {
 
     private double dailyPrice;
 
+    @Enumerated(EnumType.STRING)
     private CarState state;
 
     @ManyToOne

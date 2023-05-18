@@ -1,5 +1,6 @@
 package com.turkcellcamp.inventoryservice.api.controllers;
 
+import com.turkcellcamp.commonpackage.utils.dto.ClientResponse;
 import com.turkcellcamp.inventoryservice.business.abstracts.CarService;
 import com.turkcellcamp.inventoryservice.business.dto.requests.create.CreateCarRequest;
 import com.turkcellcamp.inventoryservice.business.dto.requests.update.UpdateCarRequest;
@@ -33,8 +34,8 @@ public class CarsController {
     }
 
     @GetMapping("/check-car-available/{id}")
-    public void checkCarAvailability(@PathVariable UUID id) {
-        carService.checkCarAvailability(id);
+    public ClientResponse checkCarAvailability(@PathVariable UUID id) {
+        return carService.checkCarAvailability(id);
     }
 
     @PostMapping

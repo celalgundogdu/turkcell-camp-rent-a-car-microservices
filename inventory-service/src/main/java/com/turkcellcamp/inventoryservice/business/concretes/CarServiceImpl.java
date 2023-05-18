@@ -2,6 +2,8 @@ package com.turkcellcamp.inventoryservice.business.concretes;
 
 import com.turkcellcamp.commonpackage.events.inventory.CarCreatedEvent;
 import com.turkcellcamp.commonpackage.events.inventory.CarDeletedEvent;
+import com.turkcellcamp.commonpackage.utils.dto.ClientResponse;
+import com.turkcellcamp.commonpackage.utils.exceptions.BusinessException;
 import com.turkcellcamp.commonpackage.utils.kafka.producer.KafkaProducer;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
 import com.turkcellcamp.inventoryservice.business.abstracts.CarService;
@@ -79,14 +81,26 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void checkCarAvailability(UUID id) {
-        rules.checkIfCarExistsById(id);
-        rules.checkIfCarAvailable(id);
+    public ClientResponse checkCarAvailability(UUID id) {
+        ClientResponse response = new ClientResponse();
+        validateCarAvailability(id, response);
+        return response;
     }
 
     @Override
     public void changeStateByCarId(UUID id, CarState state) {
         repository.changeStateByCarId(id, state);
+    }
+
+    private void validateCarAvailability(UUID id, ClientResponse response) {
+        try {
+            rules.checkIfCarExistsById(id);
+            rules.checkIfCarAvailable(id);
+            response.setSuccess(true);
+        } catch (BusinessException exception) {
+            response.setSuccess(false);
+            response.setMessage(exception.getMessage());
+        }
     }
 
     private void sendKafkaCarCreatedEvent(Car createdCar) {
