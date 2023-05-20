@@ -1,4 +1,4 @@
-package com.turkcellcamp.inventoryservice.business.dto.responses.get;
+package com.turkcellcamp.commonpackage.utils.dto;
 
 import com.turkcellcamp.commonpackage.utils.enums.CarState;
 import lombok.AllArgsConstructor;
@@ -12,11 +12,8 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAllCarsResponse {
+public class ChangeCarStateRequest {
 
-    private UUID id;
-    private String plate;
-    private int modelYear;
-    private double dailyPrice;
-    private CarState state;
+    private UUID carId;
+    private CarState carState;
 }

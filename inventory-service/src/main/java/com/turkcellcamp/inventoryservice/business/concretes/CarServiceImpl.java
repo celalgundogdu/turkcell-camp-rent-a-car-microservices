@@ -3,6 +3,7 @@ package com.turkcellcamp.inventoryservice.business.concretes;
 import com.turkcellcamp.commonpackage.events.inventory.CarCreatedEvent;
 import com.turkcellcamp.commonpackage.events.inventory.CarDeletedEvent;
 import com.turkcellcamp.commonpackage.utils.dto.ClientResponse;
+import com.turkcellcamp.commonpackage.utils.enums.CarState;
 import com.turkcellcamp.commonpackage.utils.exceptions.BusinessException;
 import com.turkcellcamp.commonpackage.utils.kafka.producer.KafkaProducer;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
@@ -15,7 +16,6 @@ import com.turkcellcamp.inventoryservice.business.dto.responses.get.GetCarRespon
 import com.turkcellcamp.inventoryservice.business.dto.responses.update.UpdateCarResponse;
 import com.turkcellcamp.inventoryservice.business.rules.CarBusinessRules;
 import com.turkcellcamp.inventoryservice.entities.Car;
-import com.turkcellcamp.inventoryservice.entities.enums.CarState;
 import com.turkcellcamp.inventoryservice.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -90,6 +90,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public void changeStateByCarId(UUID id, CarState state) {
         repository.changeStateByCarId(id, state);
+
     }
 
     private void validateCarAvailability(UUID id, ClientResponse response) {

@@ -1,5 +1,6 @@
 package com.turkcellcamp.filterservice.business.concretes;
 
+import com.turkcellcamp.commonpackage.utils.enums.CarState;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
 import com.turkcellcamp.filterservice.business.abstracts.FilterService;
 import com.turkcellcamp.filterservice.business.dto.responses.GetAllFiltersResponse;
@@ -60,5 +61,12 @@ public class FilterServiceImpl implements FilterService {
     @Override
     public Filter getByCarId(UUID carId) {
         return repository.findByCarId(carId);
+    }
+
+    @Override
+    public void changeStateByCarId(UUID carId, CarState carState) {
+        Filter filter = getByCarId(carId);
+        filter.setState(carState.name());
+        repository.save(filter);
     }
 }

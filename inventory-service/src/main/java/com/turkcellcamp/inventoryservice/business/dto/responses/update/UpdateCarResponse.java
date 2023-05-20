@@ -1,6 +1,6 @@
 package com.turkcellcamp.inventoryservice.business.dto.responses.update;
 
-import com.turkcellcamp.inventoryservice.entities.enums.CarState;
+import com.turkcellcamp.commonpackage.utils.enums.CarState;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -16,6 +16,17 @@ services:
     volumes:
       - 'mongodb_data:/data/db'
 
+  mysql:
+    container_name: maintenancedb-dev
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - '3366:3306'
+    volumes:
+      - 'mysqldb_data:/data/db'
+
 volumes:
   kafka_data:
   mongodb_data:
+  mysqldb_data:
