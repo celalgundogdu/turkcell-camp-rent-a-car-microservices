@@ -4,7 +4,6 @@ import com.turkcellcamp.commonpackage.events.rental.RentalCreatedEvent;
 import com.turkcellcamp.commonpackage.events.rental.RentalDeletedEvent;
 import com.turkcellcamp.commonpackage.utils.kafka.producer.KafkaProducer;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
-import com.turkcellcamp.rentalservice.api.clients.CarClient;
 import com.turkcellcamp.rentalservice.business.abstracts.RentalService;
 import com.turkcellcamp.rentalservice.business.dto.requests.CreateRentalRequest;
 import com.turkcellcamp.rentalservice.business.dto.requests.UpdateRentalRequest;
@@ -29,7 +28,6 @@ public class RentalServiceImpl implements RentalService {
     private final RentalRepository repository;
     private final ModelMapperService mapper;
     private final RentalBusinessRules rules;
-    private final CarClient carClient;
     private final KafkaProducer kafkaProducer;
 
     @Override
@@ -53,7 +51,7 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public CreateRentalResponse add(CreateRentalRequest request) {
-        carClient.checkIfCarAvailable(request.getCarId());
+        rules.ensureCarIsAvailable(request.getCarId());
         Rental rental = mapper.forRequest().map(request, Rental.class);
         rental.setId(null);
         rental.setTotalPrice(calculateTotalPrice(rental));

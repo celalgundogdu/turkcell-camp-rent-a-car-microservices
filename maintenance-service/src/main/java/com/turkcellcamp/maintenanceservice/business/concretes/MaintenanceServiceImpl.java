@@ -68,7 +68,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public CreateMaintenanceResponse add(CreateMaintenanceRequest request) {
-        carClient.checkIfCarAvailable(request.getCarId());
+        rules.ensureCarIsAvailable(request.getCarId());
         rules.checkIfCarUnderMaintenance(request.getCarId());
         Maintenance maintenance = mapper.forRequest().map(request, Maintenance.class);
         maintenance.setId(UUID.randomUUID());
