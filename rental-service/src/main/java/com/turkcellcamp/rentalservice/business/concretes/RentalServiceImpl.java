@@ -2,6 +2,7 @@ package com.turkcellcamp.rentalservice.business.concretes;
 
 import com.turkcellcamp.commonpackage.events.rental.RentalCreatedEvent;
 import com.turkcellcamp.commonpackage.events.rental.RentalDeletedEvent;
+import com.turkcellcamp.commonpackage.utils.dto.CreateRentalPaymentRequest;
 import com.turkcellcamp.commonpackage.utils.kafka.producer.KafkaProducer;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
 import com.turkcellcamp.rentalservice.business.abstracts.RentalService;
@@ -56,6 +57,12 @@ public class RentalServiceImpl implements RentalService {
         rental.setId(null);
         rental.setTotalPrice(calculateTotalPrice(rental));
         rental.setRentedAt(LocalDate.now());
+
+        CreateRentalPaymentRequest paymentRequest = new CreateRentalPaymentRequest();
+        mapper.forRequest().map(request.getPaymentRequest(), paymentRequest);
+        paymentRequest.setPrice(rental.getTotalPrice());
+        rules.processRentalPayment(paymentRequest);
+
         Rental createdRental = repository.save(rental);
         sendKafkaRentalCreatedEvent(request.getCarId());
         CreateRentalResponse response = mapper.forResponse().map(createdRental, CreateRentalResponse.class);
