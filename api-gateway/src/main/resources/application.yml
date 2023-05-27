@@ -7,18 +7,7 @@ spring:
       discovery:
         locator:
           enabled: true
-
-server:
-  port: 9010
-
-eureka:
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-  instance:
-    instance-id: ${spring.application.name}:${random.value}
-    prefer-ip-address: true
-    metadata-map:
-      serviceId: INVENTORY-SERVICE
+    config:
+      profile: dev
+  config:
+    import: configserver:http://localhost:8888
