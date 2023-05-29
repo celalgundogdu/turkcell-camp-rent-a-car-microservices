@@ -1,5 +1,6 @@
 package com.turkcellcamp.inventoryservice.business.abstracts;
 
+import com.turkcellcamp.commonpackage.utils.dto.CarResponse;
 import com.turkcellcamp.commonpackage.utils.dto.ClientResponse;
 import com.turkcellcamp.commonpackage.utils.enums.CarState;
 import com.turkcellcamp.inventoryservice.business.dto.requests.create.CreateCarRequest;
@@ -27,4 +28,6 @@ public interface CarService {
     ClientResponse checkCarAvailability(UUID id);
 
     void changeStateByCarId(UUID id, CarState state);
+
+    CarResponse getCarInformation(UUID id);
 }

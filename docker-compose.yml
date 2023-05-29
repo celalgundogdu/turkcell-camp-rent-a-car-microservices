@@ -9,7 +9,7 @@ services:
       - 'kafka_data:/opt/kafka/kafka-logs'
 
   mongodb:
-    container_name: filterdb-dev
+    container_name: mongodb
     image: mongo
     ports:
       - '27017:27017'
@@ -17,7 +17,7 @@ services:
       - 'mongodb_data:/data/db'
 
   mysql:
-    container_name: maintenancedb-dev
+    container_name: mysqldb
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root

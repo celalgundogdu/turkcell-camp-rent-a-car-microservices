@@ -1,10 +1,13 @@
 package com.turkcellcamp.rentalservice.business.concretes;
 
+import com.turkcellcamp.commonpackage.events.invoice.CreateInvoiceEvent;
 import com.turkcellcamp.commonpackage.events.rental.RentalCreatedEvent;
 import com.turkcellcamp.commonpackage.events.rental.RentalDeletedEvent;
+import com.turkcellcamp.commonpackage.utils.dto.CarResponse;
 import com.turkcellcamp.commonpackage.utils.dto.CreateRentalPaymentRequest;
 import com.turkcellcamp.commonpackage.utils.kafka.producer.KafkaProducer;
 import com.turkcellcamp.commonpackage.utils.mappers.ModelMapperService;
+import com.turkcellcamp.rentalservice.api.clients.CarClient;
 import com.turkcellcamp.rentalservice.business.abstracts.RentalService;
 import com.turkcellcamp.rentalservice.business.dto.requests.CreateRentalRequest;
 import com.turkcellcamp.rentalservice.business.dto.requests.UpdateRentalRequest;
@@ -30,6 +33,7 @@ public class RentalServiceImpl implements RentalService {
     private final ModelMapperService mapper;
     private final RentalBusinessRules rules;
     private final KafkaProducer kafkaProducer;
+    private final CarClient carClient;
 
     @Override
     public List<GetAllRentalsResponse> getAll() {
@@ -65,6 +69,20 @@ public class RentalServiceImpl implements RentalService {
 
         Rental createdRental = repository.save(rental);
         sendKafkaRentalCreatedEvent(request.getCarId());
+
+        CarResponse carInformation = carClient.getCarInformation(rental.getCarId());
+        CreateInvoiceEvent createInvoiceEvent = CreateInvoiceEvent.builder()
+                .cardHolder(paymentRequest.getCardHolder())
+                .plate(carInformation.getPlate())
+                .modelName(carInformation.getModelName())
+                .brandName(carInformation.getBrandName())
+                .modelYear(carInformation.getModelYear())
+                .dailyPrice(rental.getDailyPrice())
+                .rentedForDays(rental.getRentedForDays())
+                .rentedAt(rental.getRentedAt())
+                .build();
+        kafkaProducer.sendMessage(createInvoiceEvent, "create-invoice");
+
         CreateRentalResponse response = mapper.forResponse().map(createdRental, CreateRentalResponse.class);
         return response;
     }

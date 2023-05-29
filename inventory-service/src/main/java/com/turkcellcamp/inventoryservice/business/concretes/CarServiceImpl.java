@@ -2,6 +2,7 @@ package com.turkcellcamp.inventoryservice.business.concretes;
 
 import com.turkcellcamp.commonpackage.events.inventory.CarCreatedEvent;
 import com.turkcellcamp.commonpackage.events.inventory.CarDeletedEvent;
+import com.turkcellcamp.commonpackage.utils.dto.CarResponse;
 import com.turkcellcamp.commonpackage.utils.dto.ClientResponse;
 import com.turkcellcamp.commonpackage.utils.enums.CarState;
 import com.turkcellcamp.commonpackage.utils.exceptions.BusinessException;
@@ -91,6 +92,18 @@ public class CarServiceImpl implements CarService {
     public void changeStateByCarId(UUID id, CarState state) {
         repository.changeStateByCarId(id, state);
 
+    }
+
+    @Override
+    public CarResponse getCarInformation(UUID id) {
+        rules.checkIfCarExistsById(id);
+        Car car = repository.findById(id).orElseThrow();
+        return CarResponse.builder()
+                .plate(car.getPlate())
+                .modelName(car.getModel().getName())
+                .brandName(car.getModel().getBrand().getName())
+                .modelYear(car.getModelYear())
+                .build();
     }
 
     private void validateCarAvailability(UUID id, ClientResponse response) {

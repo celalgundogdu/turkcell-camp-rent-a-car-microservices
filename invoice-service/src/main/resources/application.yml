@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: INVOICE-SERVICE
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      profile: dev
