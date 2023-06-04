@@ -1,5 +1,6 @@
 package com.turkcellcamp.inventoryservice.api.controllers;
 
+import com.turkcellcamp.commonpackage.utils.constants.Roles;
 import com.turkcellcamp.commonpackage.utils.dto.CarResponse;
 import com.turkcellcamp.commonpackage.utils.dto.ChangeCarStateRequest;
 import com.turkcellcamp.commonpackage.utils.dto.ClientResponse;
@@ -13,6 +14,9 @@ import com.turkcellcamp.inventoryservice.business.dto.responses.update.UpdateCar
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,11 +30,13 @@ public class CarsController {
     private final CarService carService;
 
     @GetMapping
+    @PreAuthorize(Roles.ADMIN_OR_MODERATOR)
     public List<GetAllCarsResponse> getAll() {
         return carService.getAll();
     }
 
     @GetMapping("/{id}")
+    @PostAuthorize(Roles.ADMIN_OR_MODERATOR + "|| returnObject.modelYear == 2020")
     public GetCarResponse getById(@PathVariable UUID id) {
         return carService.getById(id);
     }
