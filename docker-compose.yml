@@ -44,7 +44,36 @@ services:
     ports:
       - '9411:9411'
 
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.44.0
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - '9090:9090'
+    networks:
+      - monitor-net
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss:8.5.26
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./grafana/:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - monitor-net
+
 volumes:
   kafka_data:
   mongodb_data:
   mysqldb_data:
+
+networks:
+  monitor-net:
+    driver: bridge

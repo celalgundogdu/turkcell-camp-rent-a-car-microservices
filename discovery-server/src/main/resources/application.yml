@@ -6,3 +6,16 @@ spring:
   cloud:
     config:
       profile: dev
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health", "prometheus", "metrics"]
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true

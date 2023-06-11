@@ -1,0 +1,25 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: 'inventory_service'
+    metrics_path: '/INVENTORY-SERVICE/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:9010']
+        labels:
+          application: 'Inventory Service'
+
+  - job_name: 'rental_service'
+    metrics_path: '/RENTAL-SERVICE/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:9010']
+        labels:
+          application: 'Rental Service'
+
+  - job_name: 'filter_service'
+    metrics_path: '/FILTER-SERVICE/actuator/prometheus'
+    static_configs:
+      - targets: [ 'host.docker.internal:9010']
+        labels:
+          application: 'Filter Service'

@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(
+                        "/actuator/**",
                         "/api/v1/filters",
                         "/api/v1/cars/check-car-available/**",
                         "/api/v1/cars/get-car-info/**",
